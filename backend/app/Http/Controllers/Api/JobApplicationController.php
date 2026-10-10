@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\JobApplication;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreJobApplicationRequest;
+use App\Http\Requests\UpdateJobApplicationRequest;
+use Illuminate\Support\Facades\Gate;
 
 class JobApplicationController extends Controller
 {
@@ -37,24 +39,35 @@ class JobApplicationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(JobApplication $jobApplication)
+    public function show(JobApplication $application)
     {
-        //
+        Gate::authorize('view', $application);
+
+        return response()->json($application);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, JobApplication $jobApplication)
+    public function update(UpdateJobApplicationRequest $request, JobApplication $application)
     {
-        //
+        Gate::authorize('update', $application);
+
+        $application->update($request->validated());
+
+        return response()->json($application->refresh());
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(JobApplication $jobApplication)
+
+    public function destroy(JobApplication $application)
     {
-        //
+        Gate::authorize('delete', $application);
+
+        $application->delete();
+
+        return response()->noContent();
     }
 }

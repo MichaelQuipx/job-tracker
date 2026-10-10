@@ -22,6 +22,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
 
-    Route::get('/applications', [JobApplicationController::class, 'index']);
-    Route::post('/applications', [JobApplicationController::class, 'store']);
+    Route::apiResource('applications', JobApplicationController::class);
 });
