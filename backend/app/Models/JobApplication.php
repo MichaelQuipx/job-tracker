@@ -22,7 +22,7 @@ class JobApplication extends Model
     protected function casts(): array
     {
         return [
-            'applied_date' => 'date',
+            'applied_date' => 'date:Y-m-d',
             'interview_date' => 'datetime',
             'salary' => 'integer'
         ];
