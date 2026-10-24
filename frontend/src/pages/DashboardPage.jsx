@@ -1,55 +1,25 @@
 import { useState, useEffect } from "react";
 import ApplicationCard from "../components/ApplicationCard";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { api } from "../lib/api";
 
 const filters = ["all", "applied", "interview", "offer", "rejected"];
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 function DashboardPage() {
-  const navigate = useNavigate();
-
   const [filter, setFilter] = useState("all");
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   async function handleLogout() {
-    try {
-      await fetch(`${API_URL}/logout`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-    } finally {
-      localStorage.removeItem("token");
-      navigate("/login");
-    }
+    await api("/logout", { method: "POST" });
   }
 
   useEffect(() => {
     async function loadApplications() {
       try {
-        const response = await fetch(`${API_URL}/applications`, {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const data = await api(`/applications`);
 
-        if (response.status === 401) {
-          localStorage.removeItem("token");
-          navigate("/login");
-          return;
-        }
-
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`);
-        }
-
-        const data = await response.json();
         setApplications(data);
       } catch (err) {
         setError(err.message);
@@ -59,7 +29,7 @@ function DashboardPage() {
     }
 
     loadApplications();
-  }, [navigate]);
+  });
 
   const visibleApplications =
     filter === "all"
@@ -71,13 +41,22 @@ function DashboardPage() {
       <header className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-3xl font-bold text-blue-700">Job Tracker</h1>
 
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="rounded bg-red-600 px-4 py-2 text-white shadow transition hover:bg-red-700"
-        >
-          Log out
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            to="/applications/new"
+            className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          >
+            Add application
+          </Link>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="rounded bg-red-600 px-4 py-2 text-white shadow transition hover:bg-red-700"
+          >
+            Log out
+          </button>
+        </div>
       </header>
 
       <div className="mt-4 flex flex-wrap gap-2">

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { api } from "../lib/api";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -15,28 +14,11 @@ function LoginPage() {
     e.preventDefault();
     setError("");
     setIsSubmitting(true);
-
     try {
-      const response = await fetch(`${API_URL}/login`, {
+      const data = await api("/login", {
         method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+        body: { email, password },
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.message || "Login failed. Please check your credentials.",
-        );
-      }
-
-      if (!data.token) {
-        throw new Error("Login failed: No authentication token received.");
-      }
 
       localStorage.setItem("token", data.token);
       navigate("/");
