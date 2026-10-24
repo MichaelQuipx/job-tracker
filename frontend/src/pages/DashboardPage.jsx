@@ -1,16 +1,33 @@
 import { useState, useEffect } from "react";
 import ApplicationCard from "../components/ApplicationCard";
+import { useNavigate } from "react-router-dom";
 
 const filters = ["all", "applied", "interview", "offer", "rejected"];
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 function DashboardPage() {
-  const [filter, setFilter] = useState("all");
+  const navigate = useNavigate();
 
+  const [filter, setFilter] = useState("all");
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  async function handleLogout() {
+    try {
+      await fetch(`${API_URL}/logout`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+    } finally {
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
+  }
 
   useEffect(() => {
     async function loadApplications() {
@@ -21,6 +38,12 @@ function DashboardPage() {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
+
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/login");
+          return;
+        }
 
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
@@ -36,7 +59,8 @@ function DashboardPage() {
     }
 
     loadApplications();
-  }, []);
+  }, [navigate]);
+
   const visibleApplications =
     filter === "all"
       ? applications
@@ -44,7 +68,18 @@ function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
-      <h1 className="text-3xl font-bold text-blue-700">Job Tracker</h1>
+      <header className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-3xl font-bold text-blue-700">Job Tracker</h1>
+
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="rounded bg-red-600 px-4 py-2 text-white shadow transition hover:bg-red-700"
+        >
+          Log out
+        </button>
+      </header>
+
       <div className="mt-4 flex flex-wrap gap-2">
         {filters.map((f) => (
           <button
