@@ -121,29 +121,30 @@ function DashboardPage() {
       <header className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-3xl font-bold text-blue-700">Job Tracker</h1>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           {user && (
             <span className="text-sm text-gray-700">Hi, {user.name}</span>
           )}
-        </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <Link
-            to="/applications/new"
-            className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-          >
-            Add application
-          </Link>
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              to="/applications/new"
+              className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+            >
+              Add application
+            </Link>
 
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="rounded bg-red-600 px-4 py-2 text-white shadow transition hover:bg-red-700"
-          >
-            Log out
-          </button>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded bg-red-600 px-4 py-2 text-white shadow transition hover:bg-red-700"
+            >
+              Log out
+            </button>
+          </div>
         </div>
       </header>
+
       <StatsRow counts={counts} />
 
       {/* Search and sort controls */}

@@ -13,6 +13,17 @@ function ApplicationCard({ application, onDelete, onStatusChange }) {
           {application.location && (
             <p className="text-sm text-gray-500">{application.location}</p>
           )}
+
+          {application.job_url && (
+            <a
+              href={application.job_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-blue-600 underline"
+            >
+              View posting
+            </a>
+          )}
         </div>
         <StatusBadge status={application.status} />
       </div>

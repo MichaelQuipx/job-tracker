@@ -26,7 +26,7 @@ class UpdateJobApplicationRequest extends FormRequest
             'company' => ['sometimes', 'required', 'string', 'max:255'],
             'position' => ['sometimes', 'required', 'string', 'max:255'],
             'location' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'job_url' => ['sometimes', 'nullable', 'url', 'max:255'],
+            'job_url' => ['sometimes', 'nullable', 'url:http,https', 'max:255'],
             'status' => ['sometimes', 'required', 'in:applied,interview,offer,rejected'],
             'applied_date' => ['sometimes', 'required', 'date'],
             'interview_date' => ['sometimes', 'nullable', 'date'],
