@@ -10,6 +10,10 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<DashboardPage />} />
         <Route path="/applications/new" element={<ApplicationFormPage />} />
+        <Route
+          path="/applications/:id/edit"
+          element={<ApplicationFormPage />}
+        />
       </Route>
 
       <Route path="/login" element={<LoginPage />} />
