@@ -3,6 +3,7 @@ import DashboardPage from "./pages/DashboardPage";
 import LoginPage from "./pages/LoginPage";
 import ApplicationFormPage from "./pages/ApplicationFormPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       </Route>
 
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

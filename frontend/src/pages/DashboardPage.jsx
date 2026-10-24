@@ -3,6 +3,8 @@ import ApplicationCard from "../components/ApplicationCard";
 import StatsRow from "../components/StatsRow";
 import { Link } from "react-router-dom";
 import { api } from "../lib/api";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const filters = ["all", "applied", "interview", "offer", "rejected"];
 
@@ -15,6 +17,9 @@ function DashboardPage() {
   const [sort, setSort] = useState("newest");
   const [actionError, setActionError] = useState("");
 
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
   const counts = applications.reduce(
     (acc, app) => {
       acc[app.status] = (acc[app.status] ?? 0) + 1;
@@ -24,7 +29,11 @@ function DashboardPage() {
   );
 
   async function handleLogout() {
-    await api("/logout", { method: "POST" });
+    try {
+      await logout();
+    } finally {
+      navigate("/login", { replace: true });
+    }
   }
 
   async function handleDelete(id) {
@@ -111,6 +120,12 @@ function DashboardPage() {
     <div className="min-h-screen bg-gray-100 p-8">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-3xl font-bold text-blue-700">Job Tracker</h1>
+
+        <div className="flex items-center gap-4">
+          {user && (
+            <span className="text-sm text-gray-700">Hi, {user.name}</span>
+          )}
+        </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <Link

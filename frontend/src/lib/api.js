@@ -24,7 +24,11 @@ export async function api(path, { method = "GET", body } = {}) {
   // Expired or invalid token: clear it and go to login
   if (response.status === 401 && token) {
     localStorage.removeItem("token");
-    window.location.href = "/login";
+
+    if (window.location.pathname !== "/login") {
+      window.location.href = "/login";
+    }
+
     throw new ApiError("Session expired", 401);
   }
 

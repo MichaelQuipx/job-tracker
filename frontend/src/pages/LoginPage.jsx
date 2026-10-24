@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { api } from "../lib/api";
+import { useAuth } from "../context/AuthContext";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -8,20 +8,22 @@ function LoginPage() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const { user, login } = useAuth();
   const navigate = useNavigate();
+
+  // Redirect authenticated users to the dashboard.
+  if (user) {
+    return <Navigate to="/" replace />;
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
     setIsSubmitting(true);
-    try {
-      const data = await api("/login", {
-        method: "POST",
-        body: { email, password },
-      });
 
-      localStorage.setItem("token", data.token);
-      navigate("/");
+    try {
+      await login(email, password);
+      navigate("/", { replace: true });
     } catch (err) {
       setError(
         err instanceof TypeError
@@ -91,6 +93,16 @@ function LoginPage() {
         >
           {isSubmitting ? "Logging in..." : "Log in"}
         </button>
+
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Don't have an account?{" "}
+          <Link
+            to="/register"
+            className="font-medium text-blue-600 hover:underline"
+          >
+            Register
+          </Link>
+        </p>
       </form>
     </div>
   );
